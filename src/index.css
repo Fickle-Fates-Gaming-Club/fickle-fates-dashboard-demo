@@ -107,6 +107,7 @@
 html,
 body,
 .dashboard-container {
+  /* tyvm https://www.reddit.com/r/css/comments/gwrx5j/hazard_tape_border_background_effect/ */
   background-image: repeating-linear-gradient(
     -55deg,
     #000,
