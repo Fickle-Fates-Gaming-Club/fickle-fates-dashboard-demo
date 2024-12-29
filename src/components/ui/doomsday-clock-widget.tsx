@@ -74,27 +74,15 @@ function DoomsdayClockWidget() {
   const [chartData, setChartData] =
     React.useState<HourData[]>(initialChartData);
 
-  const handleClick = (entry: HourData, index: number) => {
-    setActiveSegments((prevActiveSegments) => {
-      const newActiveSegments = new Set(prevActiveSegments);
-      if (newActiveSegments.has(index)) {
-        newActiveSegments.delete(index);
-      } else {
-        newActiveSegments.add(index);
-      }
-      return newActiveSegments;
-    });
-
-    setChartData((prevChartData) => {
-      const newChartData = [...prevChartData];
-      newChartData[index] = {
-        ...newChartData[index],
-        fill: activeSegments.has(index)
-          ? "hsl(var(--muted))"
-          : colorDictionary[entry.hour as keyof typeof colorDictionary],
-      };
-      return newChartData;
-    });
+  const handleClick = (entry: HourData) => {
+    const newActiveIdxs = Array.from(Array(entry.hour + 1).keys());
+    setActiveSegments(() => new Set(newActiveIdxs));
+    setChartData((prevChartData) => prevChartData.map((entry:HourData) => ({
+      ...entry,
+      fill: newActiveIdxs.includes(entry.hour)
+        ? colorDictionary[entry.hour as keyof typeof colorDictionary]
+        : "hsl(var(--muted))",
+    })));
   };
 
   const renderActiveShape = (props: any) => {
@@ -131,17 +119,19 @@ function DoomsdayClockWidget() {
                 content={<ChartTooltipContent hideLabel />}
               /> */}
               <Pie
-                data={chartData}
-                dataKey="value"
-                nameKey="hour"
-                innerRadius={100}
-                outerRadius={160}
                 activeShape={renderActiveShape}
+                data={chartData.toReversed()}
+                dataKey="value"
+                innerRadius={100}
+                nameKey="hour"
+                outerRadius={160}
                 onClick={(entry, index) =>
                   handleClick(entry as HourData, index)
                 }
                 strokeWidth={2}
                 stroke="hsl(var(--border))"
+                startAngle={-270}
+                endAngle={90}
               >
                 <Label
                   content={({ viewBox }) => {
