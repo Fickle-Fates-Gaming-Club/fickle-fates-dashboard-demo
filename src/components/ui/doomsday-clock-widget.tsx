@@ -25,30 +25,30 @@ interface HourData {
 }
 
 const colorDictionary = {
-  0: "#1CAC78",
+  0: "#1CAC78",//green
   1: "#1CAC78",
   2: "#1CAC78",
   3: "#1CAC78",
   4: "#1CAC78",
   5: "#1CAC78",
-  6: "#FF0000",
-  7: "#FF0000",
-  8: "#FF0000",
-  9: "#FF0000",
-  10: "#FF0000",
-  11: "#FF0000",
-  12: "#FFA500",
+  6: "#FFFF00",//red
+  7: "#FFFF00",
+  8: "#FFFF00",
+  9: "#FFFF00",
+  10: "#FFFF00",
+  11: "#FFFF00",
+  12: "#FFA500",// orange
   13: "#FFA500",
   14: "#FFA500",
   15: "#FFA500",
   16: "#FFA500",
   17: "#FFA500",
-  18: "#FFFF00",
-  19: "#FFFF00",
-  20: "#FFFF00",
-  21: "#FFFF00",
-  22: "#FFFF00",
-  23: "#FFFF00",
+  18: "#FF0000",//yellow
+  19: "#FF0000",
+  20: "#FF0000",
+  21: "#FF0000",
+  22: "#FF0000",
+  23: "#FF0000",
 };
 
 const initialChartData: HourData[] = Array.from({ length: 24 }, (_, i) => ({
@@ -74,27 +74,16 @@ function DoomsdayClockWidget() {
   const [chartData, setChartData] =
     React.useState<HourData[]>(initialChartData);
 
-  const handleClick = (entry: HourData, index: number) => {
-    setActiveSegments((prevActiveSegments) => {
-      const newActiveSegments = new Set(prevActiveSegments);
-      if (newActiveSegments.has(index)) {
-        newActiveSegments.delete(index);
-      } else {
-        newActiveSegments.add(index);
-      }
-      return newActiveSegments;
-    });
-
-    setChartData((prevChartData) => {
-      const newChartData = [...prevChartData];
-      newChartData[index] = {
-        ...newChartData[index],
-        fill: activeSegments.has(index)
-          ? "hsl(var(--muted))"
-          : colorDictionary[entry.hour as keyof typeof colorDictionary],
-      };
-      return newChartData;
-    });
+  const handleClick = (entry: HourData) => {
+    console.log(entry)
+    const newActiveIdxs = Array.from(Array(entry.hour + 1).keys());
+    setActiveSegments(() => new Set(newActiveIdxs));
+    setChartData((prevChartData) => prevChartData.map((entry:HourData) => ({
+      ...entry,
+      fill: newActiveIdxs.includes(entry.hour)
+        ? colorDictionary[entry.hour as keyof typeof colorDictionary]
+        : "hsl(var(--muted))",
+    })));
   };
 
   const renderActiveShape = (props: any) => {
@@ -131,17 +120,19 @@ function DoomsdayClockWidget() {
                 content={<ChartTooltipContent hideLabel />}
               /> */}
               <Pie
-                data={chartData}
-                dataKey="value"
-                nameKey="hour"
-                innerRadius={100}
-                outerRadius={160}
                 activeShape={renderActiveShape}
+                data={chartData.toReversed()}
+                dataKey="value"
+                innerRadius={100}
+                nameKey="hour"
+                outerRadius={160}
                 onClick={(entry, index) =>
                   handleClick(entry as HourData, index)
                 }
                 strokeWidth={2}
                 stroke="hsl(var(--border))"
+                startAngle={-270}
+                endAngle={90}
               >
                 <Label
                   content={({ viewBox }) => {
