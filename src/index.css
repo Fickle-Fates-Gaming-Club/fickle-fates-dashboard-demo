@@ -100,13 +100,11 @@
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
     font-feature-settings: "rlig" 1, "calt" 1;
   }
 }
-html,
-body,
-.dashboard-container {
+html {
   /* tyvm https://www.reddit.com/r/css/comments/gwrx5j/hazard_tape_border_background_effect/ */
   background-image: repeating-linear-gradient(
     -55deg,
@@ -132,7 +130,6 @@ body,
 }
 
 .dashboard-widget {
-  /* border-radius: 4px; */
   background-color: white;
   border: 3px solid black;
 
@@ -149,7 +146,6 @@ body,
 
 .objective-tracker {
   grid-area: obj;
-  /* background: blue; */
 }
 
 .objective-tracker p {
@@ -162,14 +158,12 @@ body,
 
 .complication-tracker {
   grid-area: comp;
-  /* background: red; */
 }
 
 .doomsday-clock {
   grid-area: clock;
   display: grid;
   justify-content: center;
-  /* background: green; */
 
   .clock-time {
     font-family: var(--ff-display);
